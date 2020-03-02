@@ -89,6 +89,9 @@ namespace Users.Models
     public class RoleModifyModel
     {
         [ReadOnly(true)]
+        public string UserId { get; set; }
+
+        [ReadOnly(true)]
         public string UserName { get; set; }
         public IEnumerable<string> AllRoles { get; set; }
         public Dictionary<string, bool> IsInRole { get; set; }

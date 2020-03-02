@@ -43,7 +43,14 @@
                         </table>
                     </div>
                     <hr />
-                    <button id="btnSacuvaj" class="btn btn-primary border-round">Sačuvaj promene</button>
+                    <div id="dugmadWrapper" class="d-flex">
+                        <button id="btnSacuvaj" class="btn btn-primary border-round">Sačuvaj promene</button>
+                        @using (Html.BeginForm("ObrisiNalog", "Admin", new { userId = Model.UserId }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger border-round ml-2">Obriši nalog</button>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,11 +73,11 @@
             if (values.length == 0) {
                 alert("Korisnik mora imati barem jednu ulogu");
                 return;
-            }            
+            }
 
             $.ajax({
                 url: "/Admin/IzmeniPrava",
-                method: "POST",                
+                method: "POST",
                 data: { userName: "@Model.UserName", newRoles: JSON.stringify(values) },
                 error: xhr => { console.log(xhr.statusText); },
                 success: response => { $("#povratnaPoruka").html(response); }

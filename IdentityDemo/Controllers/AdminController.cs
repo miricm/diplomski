@@ -155,6 +155,7 @@ namespace IdentityDemo.Controllers
                 var allRoles = RoleManager.Roles.Select(role => role.Name);
                 var model = new RoleModifyModel
                 {
+                    UserId   = user.Id,
                     UserName = user.UserName,
                     IsInRole = new Dictionary<string, bool>(),
                     AllRoles = allRoles
@@ -254,7 +255,7 @@ namespace IdentityDemo.Controllers
                 // Brisanje nije uspelo, ispisi greske
                 AddErrorsFromResult("AccountDeleteValidation", result);
             }
-            TempData["accNotFoundError"] = "Greska! Nalog nije pronadjen. Pokušajte kasnije.";
+            TempData["accNotFoundError"] = "Greska! Pokušajte kasnije.";
             return RedirectToAction("IzmeniProfil", new { userId });
         }
 
