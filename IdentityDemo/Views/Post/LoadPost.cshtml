@@ -1,0 +1,78 @@
+﻿
+@model Users.Models.Article
+@using Microsoft.AspNet.Identity
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid mb-5">
+    <div class="row">
+        <div class="col-md-2 mt-5 sticky-top h-content">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="card-title">Autor: @Model.Author.FirstName @Model.Author.LastName</h4>
+                    <h5 class="card-title">Datum objave: @Model.DatePublished.ToShortDateString()</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div id="objava" class="card shadow-sm">
+                <img src="data:image/jpg;base64,@Convert.ToBase64String(Model.Image)" alt="Slika kancelarije" class="img-fluid card-img-top " />
+                <div class="card-body">
+                    <h2 class="card-title text-center font-weight-bold">@Model.Title</h2>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="card-text my-5 col-md-8">
+                            <!-- Tekst artikla -->
+                            <p class="post-text">@Model.Text</p>
+                            <!-- Kraj teksta -->
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer" id="komentari">
+                    <h5 class="ml-3 mt-3 mb-5">Komentari</h5>
+                    <div class="container">
+
+                        @if (Model.Comments.Count == 0)
+                        {
+                            <h5 class="text-center">Ova objava trenutno nema komentara</h5>
+                        }
+                        else
+                        {
+                            foreach (var comment in Model.Comments)
+                            {
+                                <div class="comment my-5">
+                                    <p>@comment.PostedBy.UserName - @comment.DatePublished.ToShortDateString(), @comment.DatePublished.ToShortTimeString() </p>
+                                    <div class="bg-white border border-round">
+                                        <p class="p-3">@comment.Text</p>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        <hr />
+
+                        <p>Ostavite svoj komentar</p>
+                        <p id="emptyCommentError" class="text-danger ml-3">@TempData["EmptyCommentError"]</p>
+
+                        <!-- Moze biti i AJAX -->
+
+                        @using (Html.BeginForm("PostComment", "Post", new { postId = Model.Id, userId = User.Identity.GetUserId() }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <textarea name="text" class="form-control border-round" rows="5" placeholder="Komentar..."></textarea>
+                            <button type="submit" class="btn btn-primary border-round mt-2">Posalji</button>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿
+.border-round {
+    border-radius: 1.5rem;
+}
+
+h1, h2, h3, h4, h5, div, p, a, label {
+    font-family: 'Oswald', sans-serif;
+}
+
+.f-awesome {
+    font-size: 1.8rem;
+}
+
+.separator {
+    height: 3px;
+}
+
+a:hover {
+    text-decoration: none !important;
+}
+
+.h-content {
+    height: fit-content;
+}
+
+.post-text {
+    /*font-family:Calibri;*/
+    font-size: large;
+}
+
+/*Profile picture classes*/
+.object-fit-cover {
+    object-fit: cover;
+}
+
+.profilepic-lg {
+    object-fit: cover;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+}
+
+.profilepic-sm {
+    object-fit: cover;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+    .profilepic-sm:hover {
+        cursor: pointer !important;
+        border: 2px solid;
+        border-color: #3c80de;
+    }

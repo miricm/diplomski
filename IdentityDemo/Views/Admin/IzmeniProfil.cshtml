@@ -1,0 +1,98 @@
+﻿
+@model Users.Models.AccountModifyModel
+
+@using Microsoft.AspNet.Identity
+@using Users.Infrastructure
+
+@{
+    ViewBag.Title = "Profil";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<h2 class="text-left ml-4 mt-4 mb-5">Profil</h2>
+
+<div class="container">
+    <div class="row d-flex justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex">
+                    <div class="my-auto">
+                        @if (Model.CurrentProfilePicture == null)
+                        {
+                            <div class="card-text font-weight-bold">Nemate profilnu sliku</div>
+                        }
+                        else
+                        {
+                            <img src="data:image/jpg;base64,@Convert.ToBase64String(Model.CurrentProfilePicture)" class="profilepic-lg mr-auto shadow" alt="Profilna slika" />
+                        }
+                    </div>
+                    <div class="ml-5 my-auto">
+                        <h4 class="card-title font-weight-bold">@Model.FirstName @Model.LastName</h4>
+                    </div>
+                </div>
+
+                @using (Html.BeginForm("IzmeniProfil", "Admin", new { userId = User.Identity.GetUserId() }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="card-body">
+                        @Html.ValidationSummary("", new { @class = "text-danger my-3" })
+
+                        <p class="text-success my-3">@TempData["Success"]</p>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="file">Profilna slika</label>
+                                <div class="custom-file">
+                                    @Html.TextBoxFor(m => m.NewProfilePicture, new { @type = "file", @class = "custom-file-input", @id = "file" })
+                                    <label class="custom-file-label" id="lbSlika" for="file">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="ime">Ime</label>
+                                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control border-round", @value = Model.FirstName, @id = "ime" })
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="prezime">Prezime</label>
+                                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control border-round", @value = Model.LastName, @id = "prezime" })
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">E-Adresa</label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control border-round", @value = Model.Email, @type = "email", @id = "email" })
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="datumReg">Registrovan datuma</label>
+                                <input type="text" class="form-control border-round" id="datumReg" value="@Model.DateRegistered" disabled />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="korIme">Korisnicko ime</label>
+                                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control border-round", @value = Model.UserName, @id = "korIme" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary border-round">Sacuvaj promene</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Menjanje lozinke -->
+    <div id="promenaLozinke">
+        @Html.Partial("~/Views/Partial/_ChangePasswordPartial.cshtml", new Users.Models.ChangePasswordModel())
+    </div>
+</div>
+
+<script>
+    $(document).ready(() => {
+        // Upisuje ime datoteke u input polje
+        $("input[type='file']").change(e => {
+            let fileName = e.target.files[0].name;
+            //console.log(fileName);
+            $("#lbSlika").html(fileName);
+        });
+    });
+</script>

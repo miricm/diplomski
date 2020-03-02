@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Users.Models.AppUser>
+@{
+    ViewBag.Title = "Nalozi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="text-left ml-4 mt-4 mb-5">Nalozi</h2>
+
+
+<div class="row">
+
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="card shadow-sm border border-primary">
+
+            <div class="card-header bg-primary">
+                <h5 class="card-title text-white my-2">Pregled naloga</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="text-center">
+                            <th>Korisnicko ime</th>
+                            <th>Ime</th>
+                            <th>Prezime</th>
+                            <th>Uloge</th>
+                            <th>Email</th>
+                            <th>Akcija</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.Count() == 0)
+                        {
+                            <tr class="text-center font-weight-bolder"><td colspan="5">Ne postoji ni jedan nalog</td></tr>
+                        }
+                        else
+                        {
+                            foreach (var user in Model)
+                            {
+                                <tr class="text-center">
+                                    <td>@user.UserName</td>
+                                    <td>@user.FirstName</td>
+                                    <td>@user.LastName</td>
+                                    <td>@user.RoleNames</td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        @Html.ActionLink("Izmeni", "IzmeniPrava", new { userId = user.Id }, new { @class = "btn btn-outline-primary border-round" })
+                                        @Html.ActionLink("Obrisi", "ObrisiNalog", new { userId = user.Id }, new { @class = "btn btn-outline-danger border-round" })
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+
+</div>

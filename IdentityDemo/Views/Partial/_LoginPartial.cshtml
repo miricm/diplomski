@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNet.Identity
+
+@if (Request.IsAuthenticated)
+{
+
+    <li class="nav-item active mx-2 my-auto dropdown">
+        <!-- Staviti profilnu sliku -->
+        <img id="profilnaSlika" src="" alt="Profilna Slika" class="profilepic-sm shadow-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
+        <!-- Ucitavanje profilne slike, ako je prosla autentifikacija -->
+        <script>
+            $("#profilnaSlika").hide();
+            $(document).ready(() => {
+                //alert("RADI");
+                $.ajax({
+                    url: "/Home/UcitajProfilnuSliku",
+                    method: "POST",
+                    error: xhr => console.log(`${xhr.status} ${xhr.statusText}`),
+                    success: data => {
+                        // console.log(data)
+                        $("#profilnaSlika").attr("src", `data:image/jpg;base64,${data}`);                        
+                    }
+                });
+                $("#profilnaSlika").fadeIn(800);
+            });
+        </script>
+
+
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profilnaSlika">
+            @Html.ActionLink("Profil", "IzmeniProfil", "Admin", new { userId = User.Identity.GetUserId() }, new { @class = "dropdown-item" })
+
+            @if (User.IsInRole("Administrator"))
+            {
+                @Html.ActionLink("Statistika", "Index", "Admin", new { userId = User.Identity.GetUserId() }, new { @class = "dropdown-item" })
+                @Html.ActionLink("Nalozi", "Nalozi", "Admin", null, new { @class = "dropdown-item" })
+                @Html.ActionLink("Uloge", "Uloge", "Admin", null, new { @class = "dropdown-item" })
+            }
+
+            @if (User.IsInRole("Autor"))
+            {
+                @Html.ActionLink("Nova objava", "Objavi", "Admin", null, new { @class = "dropdown-item font-weight-bold" })
+            }
+
+            <div class="dropdown-divider"></div>
+            @Html.ActionLink("Odjava", "LogOff", "Account", new { currentUrl = Request.Url }, new { @class = "dropdown-item" })
+        </div>
+    </li>
+
+}
+else
+{
+    <li class="nav-item active mx-2 my-1">
+        @Html.ActionLink("Prijava", "Login", "Account", new { currentUrl = Request.Url }, new { @class = "btn btn-dark border-round text-light" })
+    </li>
+    <li class="nav-item active mx-2 my-1">
+        @Html.ActionLink("Registracija", "Register", "Account", new { currentUrl = Request.Url }, new { @class = "btn btn-dark border-round text-light" })
+    </li>
+}

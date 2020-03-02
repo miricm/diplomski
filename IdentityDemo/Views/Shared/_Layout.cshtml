@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewBag.Title</title>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/font-awesome/css/all.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/mojCSS/global.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/mojCSS/pocetna.css" />
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- Navigation begin -->
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#01b018">
+            <i class="fab fa-hackerrank f-awesome"></i>
+            <a class="navbar-brand ml-4 mr-auto" href="#">WEBTECH</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse ml-auto" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li>
+                        <div class="dropdown ml-auto my-1">
+                            <button class="btn btn-dark border-round dropdown-toggle" id="birajJezikDropDown" data-toggle="dropdown" aria-haspopup="false">English</button>
+                            <div class="dropdown-menu" aria-labelledby="birajJezikDropDown">
+                                <a href="#" class="dropdown-item">English</a>
+                                <a href="#" class="dropdown-item">Polish</a>
+                                <a href="#" class="dropdown-item">Russian</a>
+                                <a href="#" class="dropdown-item">Mandarin</a>
+                                <a href="#" class="dropdown-item">Serbian</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item active mx-3 my-auto d-flex">
+                        <a href="#" class="nav-link"><i class="fab fa-facebook-f f-awesome mx-2"></i></a>
+                        <a href="#" class="nav-link"><i class="fab fa-instagram f-awesome mx-2"></i></a>
+                        <a href="#" class="nav-link"><i class="fab fa-youtube f-awesome mx-2"></i></a>
+                    </li>
+                    @Html.Partial("~/Views/Partial/_LoginPartial.cshtml")
+                </ul>
+            </div>
+        </nav>
+        <div id="kategorijeLinkovi" style="background-color:#003107;">
+            <div class="justify-content-center d-lg-flex d-md-inline">
+                <a href="#" class="nav-link">Programiranje</a>
+                <a href="#" class="nav-link">Kriptografija</a>
+                <a href="#" class="nav-link">AI</a>
+                <a href="#" class="nav-link">Masinsko ucenje</a>
+                <a href="#" class="nav-link">Veb razvoj</a>
+                <a href="#" class="nav-link">Autori</a>
+                <a href="#" class="nav-link">Jos...</a>
+            </div>
+        </div>
+    </header>
+    <!-- Navigation end -->
+
+    <div id="mainContent">
+        @RenderBody()
+    </div>
+
+    <!--Footer Begin-->
+
+    <footer class="mb-0 mt-auto bg-light">
+        <div class="container py-4">
+            <div class="text-center">Copyright &copy; WEBTECH @DateTime.Now.Year</div>
+        </div>
+    </footer>
+
+    <!--Footer End-->
+    <!-- Bootstrap JS -->
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+</body>
+</html>

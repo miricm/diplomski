@@ -1,0 +1,80 @@
+﻿@model Users.Models.RoleModifyModel
+
+@{
+    ViewBag.Title = "Izmeni nalog";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="text-left ml-4 my-4">Izmeni nalog</h2>
+
+<div class="container my-3">
+    <div class="d-flex justify-content-start">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title my-3">Upravljanje ulogama</h5>
+                    <div class="font-weight-light">@Model.UserName</div>
+                </div>
+                <div class="card-body">
+
+                    <div id="povratnaPoruka" class="font-weight-light my-3">
+
+                    </div>
+
+                    <div class="table-responsive border">
+                        <table class="table">
+                            <thead>
+                                <tr class="text-center">
+                                    <th colspan="2">Korisnik je u sledećim ulogama</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var roleName in Model.AllRoles)
+                                {
+                                    <tr>
+                                        <td>@roleName</td>
+                                        <td>
+                                            <input type="checkbox" name="name" value="@roleName" class="form-check-input"
+                                                   @(Model.IsInRole[roleName] ? "checked" : "") />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr />
+                    <button id="btnSacuvaj" class="btn btn-primary border-round">Sačuvaj promene</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(() => {
+        $("#btnSacuvaj").click(() => {
+
+            let inputs = $("input[type='checkbox']");
+            let values = [];
+
+            for (let cbox of inputs) {
+                if (cbox.checked) {
+                    values.push(cbox.value);
+                }
+            }
+
+            if (values.length == 0) {
+                alert("Korisnik mora imati barem jednu ulogu");
+                return;
+            }            
+
+            $.ajax({
+                url: "/Admin/IzmeniPrava",
+                method: "POST",                
+                data: { userName: "@Model.UserName", newRoles: JSON.stringify(values) },
+                error: xhr => { console.log(xhr.statusText); },
+                success: response => { $("#povratnaPoruka").html(response); }
+            });
+        });
+    });
+</script>

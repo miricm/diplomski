@@ -1,0 +1,50 @@
+﻿
+#kategorijeLinkovi a {
+    color: #01b018;
+}
+
+.card-title-white{
+    color:white;
+    font-weight:bolder;
+    font-size: larger;
+}
+.card-title-white:hover{
+    color:white;
+    text-decoration:none !important;
+}
+
+.card-text-white {
+    color: white;
+    font-weight: normal;
+    font-size: medium;
+}
+
+.card-text-white:hover {
+    color:white;
+    text-decoration:none !important;
+}
+
+.heading-black {
+    color: black;
+    font-weight: bolder;
+    font-size:42px;
+}
+
+.card-mini .card-title {
+    font-weight: bolder;
+    font-size: larger;
+}
+
+/*.card-mini .card-header {
+    height: 200px;
+    background-size:cover;
+    background-repeat:no-repeat;
+}*/
+
+.card-mini a {
+    color:black;
+}
+
+.card-mini a:hover {
+    text-decoration:none !important;
+}
