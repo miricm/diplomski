@@ -17,16 +17,17 @@
                     error: xhr => console.log(`${xhr.status} ${xhr.statusText}`),
                     success: data => {
                         // console.log(data)
-                        $("#profilnaSlika").attr("src", `data:image/jpg;base64,${data}`);                        
+                        $("#profilnaSlika").attr("src", `data:image/jpg;base64,${data}`); 
+                        $("#profilnaSlika").fadeIn(800);
                     }
-                });
-                $("#profilnaSlika").fadeIn(800);
+                });                
             });
         </script>
 
 
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profilnaSlika">
-            @Html.ActionLink("Profil", "IzmeniProfil", "Admin", new { userId = User.Identity.GetUserId() }, new { @class = "dropdown-item" })
+            @Html.ActionLink("Profil i privatnost", "IzmeniProfil", "Admin", new { userId = User.Identity.GetUserId() }, new { @class = "dropdown-item" })
+            <a href="/Admin/Sigurnost" class="dropdown-item">Sigurnost</a>
 
             @if (User.IsInRole("Administrator"))
             {

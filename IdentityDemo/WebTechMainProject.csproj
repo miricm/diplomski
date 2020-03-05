@@ -1980,6 +1980,7 @@
     <Content Include="Views\Admin\AdminErrorPage.cshtml" />
     <Content Include="Views\Admin\IzmeniPrava.cshtml" />
     <Content Include="Views\Home\HomeErrorPage.cshtml" />
+    <Content Include="Views\Admin\Sigurnost.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

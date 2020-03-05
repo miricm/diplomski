@@ -206,6 +206,13 @@ namespace IdentityDemo.Controllers
             return View("AdminErrorPage", (object)"Korisnik nije pronadjen, pokušajte ponovo.");
         }
 
+        // GET: /admin/sigurnost
+        public ViewResult Sigurnost()
+        {
+            return View();
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PromeniLozinku(ChangePasswordModel model, string userId)

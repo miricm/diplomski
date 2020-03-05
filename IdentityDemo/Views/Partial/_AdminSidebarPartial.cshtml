@@ -8,15 +8,19 @@
         <div class="sidebar-heading">WEBTECH Komandna Tabla</div>
         <div class="list-group list-group-flush my-2">
             @Html.ActionLink("Generalno", "Index", new { userId = User.Identity.GetUserId() }, new { @class = "list-group-item list-group-item-action bg-light" })
-            @Html.ActionLink("Profil", "IzmeniProfil", new { userId = User.Identity.GetUserId() }, new { @class = "list-group-item list-group-item-action bg-light" })
+            @Html.ActionLink("Profil i privatnost", "IzmeniProfil", new { userId = User.Identity.GetUserId() }, new { @class = "list-group-item list-group-item-action bg-light" })
             @Html.ActionLink("Objave", null, new { username = User.Identity.Name }, new { @class = "list-group-item list-group-item-action bg-light" })
             @Html.ActionLink("Nalozi", "Nalozi", null, new { @class = "list-group-item list-group-item-action bg-light" })
             @Html.ActionLink("Uloge", "Uloge", null, new { @class = "list-group-item list-group-item-action bg-light" })
+            @*@Html.ActionLink("Sigurnost", "Uloge", null, new { @class = "list-group-item list-group-item-action bg-light" })*@
+            <a href="/Admin/Sigurnost" class="list-group-item list-group-item-action bg-light">Sigurnost</a>
 
             @if (User.IsInRole("Autor") || User.IsInRole("Moderator") || User.IsInRole("Administrator"))
             {
                 <a href="/Admin/Objavi" class="list-group-item list-group-item-action bg-light font-weight-bold">Postavi objavu</a>
             }
+
+
 
         </div>
 
