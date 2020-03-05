@@ -3,9 +3,9 @@
     border-radius: 1.5rem;
 }
 
-h1, h2, h3, h4, h5, div, p, a, label {
+/*h1, h2, h3, h4, h5, div, p, a, label {
     font-family: 'Oswald', sans-serif;
-}
+}*/
 
 .f-awesome {
     font-size: 1.8rem;
@@ -52,3 +52,7 @@ a:hover {
         border: 2px solid;
         border-color: #3c80de;
     }
+
+.text-sm {
+    font-size:small;
+}
