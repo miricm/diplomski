@@ -1945,6 +1945,7 @@
     <Compile Include="Users\Infrastructure\AuthorizeHelper.cs" />
     <Compile Include="Users\Infrastructure\CustomExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Users\Infrastructure\EmailService.cs" />
     <Compile Include="Users\Models\UserViewModels.cs" />
   </ItemGroup>
   <ItemGroup>

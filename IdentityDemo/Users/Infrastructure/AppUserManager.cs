@@ -31,6 +31,15 @@ namespace Users.Infrastructure
                 RequireDigit = false
             };
 
+            manager.RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider<AppUser> 
+            { 
+                // Registrovanje provajdera, napisati u dokumentaciji
+                Subject = "Security Code", 
+                BodyFormat = "Your security code is {0}"
+            });
+
+            manager.EmailService = new EmailService();
+
             return manager;
         }
 
