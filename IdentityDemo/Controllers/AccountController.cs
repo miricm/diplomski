@@ -17,7 +17,7 @@ namespace IdentityDemo.Controllers
     {
         // currentUrl = Url sa kojeg je pozvana akcija
 
-        public ActionResult Register(string returnUrl, string currentUrl)
+        public ViewResult Register(string returnUrl, string currentUrl)
         {
             ViewBag.ReturnUrl = returnUrl == null ? currentUrl : returnUrl;
             return View();
@@ -29,7 +29,7 @@ namespace IdentityDemo.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = new AppUser 
+                AppUser user = new AppUser
                 {
                     UserName = model.UserName,
                     Email = model.Email,
@@ -37,29 +37,54 @@ namespace IdentityDemo.Controllers
                     ProfilePicture = UserManager.SetDefaultProfilePicture()
                 };
 
-                var resultCreate   = await UserManager.CreateAsync(user, model.Password);                
+                var createResult = await UserManager.CreateAsync(user, model.Password);
 
-                if (resultCreate.Succeeded)
+                if (createResult.Succeeded)
                 {
-                    var resultAddRole  = await UserManager.AddToRoleAsync(user.Id, "Korisnik");
-                    if(resultAddRole.Succeeded)
-                    {
-                        await SignInManager.SignInAsync(user, isPersistent: model.RememberMe, rememberBrowser: false);
-                        if (string.IsNullOrEmpty(returnUrl))
-                        {
-                            return RedirectToAction("Index", "Home");
-                        }
-                        return Redirect(returnUrl);
-                    }
-                    // Dodavanje uloge nije uspelo
-                    AddErrorsFromResult(resultAddRole);
+                    // await SignInManager.SignInAsync(user, isPersistent: model.RememberMe, rememberBrowser: false);
+                    await UserManager.AddToRoleAsync(user.Id, "Korisnik");
+                    return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
                 }
                 // Kreiranje naloga nije uspelo
-                AddErrorsFromResult(resultCreate);
+                AddErrorsFromResult(createResult);
             }
             // Model ne valja, prikazi pogled ponovo
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> SendVerificationEmail(string userId)
+        {
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userId);
+            var callbackUrl = Url.Action(
+                actionName: "ConfirmEmail",
+                controllerName: "Account",
+                routeValues: new { userId, code },
+                protocol: Request.Url.Scheme
+            );
+
+            await UserManager.SendEmailAsync(
+                userId,
+                subject: "[WEBTECH] Potvrdite vaš e-mail",
+                body: $"Kliknite na link kako biste verifikovali nalog:<br> <a href='{callbackUrl}'>Verifikuj nalog</a>"
+            );
+
+            // Samo radi testiranja
+            // ViewBag.CallbackUrl = callbackUrl;
+            return View("DisplayEmail");
+        }
+
+        [AllowAnonymous] // Metodu pokrece klik na link sa emaila, ili sa aplikacije ako je email iskljucen
+        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+
+            var confirmResult = await UserManager.ConfirmEmailAsync(userId, code);
+            return View(confirmResult.Succeeded ? "ConfirmEmail" : "Error");
         }
 
         public ActionResult Login(string returnUrl, string currentUrl)
@@ -86,30 +111,25 @@ namespace IdentityDemo.Controllers
                     //AuthManager.SignOut();
                     //AuthManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
 
-                    await SignInManager.SignInAsync(user, isPersistent: details.RememberMe, rememberBrowser: false);
-                    
-                    if (string.IsNullOrEmpty(returnUrl))
+                    if (!user.EmailConfirmed)
                     {
-                        return Redirect("/");
+                        return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
                     }
-                    return Redirect(returnUrl);
+
+                    await SignInManager.SignInAsync(user, isPersistent: details.RememberMe, rememberBrowser: false);
+                    return Redirect(string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl);
                 }
             }
             // Model nije dobar, vrati pogled
             ViewBag.ReturnUrl = returnUrl;
             return View(details);
         }
-        
+
         [Authorize]
         public ActionResult LogOff(string currentUrl)
         {
             AuthManager.SignOut();
-
-            if (string.IsNullOrEmpty(currentUrl))
-            {
-                return Redirect("/");
-            }
-            return Redirect(currentUrl);
+            return Redirect(string.IsNullOrEmpty(currentUrl) ? "/" : currentUrl);
         }
 
 

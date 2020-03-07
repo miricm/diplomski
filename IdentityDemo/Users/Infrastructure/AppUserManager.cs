@@ -8,6 +8,7 @@ using System.Web;
 using Users.Models;
 using Microsoft.Owin;
 using System.IO;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace Users.Infrastructure
 {
@@ -39,6 +40,13 @@ namespace Users.Infrastructure
             });
 
             manager.EmailService = new EmailService();
+
+            var dataProtectionProvider = options.DataProtectionProvider;
+            if(dataProtectionProvider != null)
+            {
+                manager.UserTokenProvider =
+                    new DataProtectorTokenProvider<AppUser>(dataProtectionProvider.Create("ASP.NET Identity"));
+            }
 
             return manager;
         }

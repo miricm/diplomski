@@ -1947,7 +1947,7 @@
     <Compile Include="Users\Infrastructure\AuthorizeHelper.cs" />
     <Compile Include="Users\Infrastructure\CustomExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Users\Infrastructure\EmailService.cs" />
+    <Compile Include="Users\Infrastructure\MessagingServices.cs" />
     <Compile Include="Users\Models\UserViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1985,6 +1985,9 @@
     <Content Include="Views\Home\HomeErrorPage.cshtml" />
     <Content Include="Views\Security\Index.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Account\DisplayEmail.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

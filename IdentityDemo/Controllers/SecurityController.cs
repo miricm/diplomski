@@ -27,10 +27,10 @@ namespace IdentityDemo.Controllers
         public async Task<ActionResult> EnableTwoFactorAuth()
         {
             // Omoguci 2FA
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), true);
-
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), enabled: true);
+            
             var isPersistant = ((System.Web.Security.FormsIdentity)User.Identity).Ticket.IsPersistent;
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
             if (user != null)
             {
