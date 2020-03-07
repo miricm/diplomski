@@ -207,10 +207,10 @@ namespace IdentityDemo.Controllers
         }
 
         // GET: /admin/sigurnost
-        public ViewResult Sigurnost()
-        {
-            return View();
-        }
+        //public ViewResult Sigurnost()
+        //{
+        //    return View();
+        //}
 
 
         [HttpPost]

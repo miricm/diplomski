@@ -10,6 +10,7 @@ using Users.Infrastructure;
 
 namespace Users.Models
 {
+    // Account
     public class RegisterModel
     {
         [Required(ErrorMessage = "Korisnicko ime je obavezno!")]
@@ -35,6 +36,7 @@ namespace Users.Models
         public bool RememberMe { get; set; }
     }
 
+    // Admin
     public class ArticleModel
     {
         [Required(ErrorMessage = "Naslov artikla je obavezan!")]
@@ -73,7 +75,7 @@ namespace Users.Models
         public DateTime DateRegistered { get; set; }
 
         [Required(ErrorMessage = "E-Adresa je obavezna!")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "Email format neispravan!")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail format neispravan!")]
         public string Email { get; set; }
     }
 
@@ -90,10 +92,18 @@ namespace Users.Models
     {
         [ReadOnly(true)]
         public string UserId { get; set; }
-
         [ReadOnly(true)]
         public string UserName { get; set; }
         public IEnumerable<string> AllRoles { get; set; }
         public Dictionary<string, bool> IsInRole { get; set; }
+    }
+
+    // Security
+    public class SecurityViewModel
+    {
+        public IEnumerable<UserLoginInfo> Logins { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public bool BrowserRemembered { get; set; }        
     }
 }

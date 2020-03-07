@@ -12,11 +12,11 @@ namespace IdentityDemo.Controllers
 {
     [Authorize]
     public class SecurityController : Controller
-    {
-        // GET: Security
+    {        
+        [Route("Admin/Sigurnost")]
         public ActionResult Index()
         {
-            return Redirect("/Admin/Sigurnost");
+            return View();
         }
 
         [HttpPost]
