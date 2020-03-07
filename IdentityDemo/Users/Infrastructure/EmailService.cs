@@ -21,13 +21,16 @@ namespace Users.Infrastructure
             // Konfiguracija klijenta
             var client = new SmtpClient(host: "smtp.sendgrid.net", port: 587);
 
-            client.Port = 587;
+            // Nepotrebno?
+            // client.Port = 587; 
+
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
 
             // Kreiranje akreditiva (credentials)
             NetworkCredential credentials = new NetworkCredential(sendGridUserName, sendGridPassword);
-            client.EnableSsl = true; client.Credentials = credentials;
+            client.EnableSsl    = true; 
+            client.Credentials  = credentials;
 
             // Kreiranje poruke
             var mail      = new MailMessage(sentFrom, message.Destination);
