@@ -19,20 +19,15 @@ namespace IdentityDemo.Controllers
     {
         // GET: Admin
 
-        public ActionResult Index(string userId)
+        public ActionResult Index()
         {
-            AppUser user = UserManager.FindById(userId);
+            AppUser user = UserManager.FindById(User.Identity.GetUserId());
             return View(user);
         }
 
-        public async Task<ActionResult> IzmeniProfil(string userId)
+        public async Task<ActionResult> IzmeniProfil()
         {
-            if (string.IsNullOrEmpty(userId))
-            {
-                return RedirectToAction("Index");
-            }
-
-            AppUser user = await UserManager.FindByIdAsync(userId);
+            AppUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             AccountModifyModel model = new AccountModifyModel
             {
                 UserName = user.UserName,
@@ -47,11 +42,11 @@ namespace IdentityDemo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> IzmeniProfil(AccountModifyModel model, string userId)
+        public async Task<ActionResult> IzmeniProfil(AccountModifyModel model)
         {
             if (ModelState.IsValid)
             {
-                AppUser user = await UserManager.FindByIdAsync(userId);
+                AppUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                 if (user != null)
                 {
                     user.FirstName  = model.FirstName;
@@ -72,12 +67,12 @@ namespace IdentityDemo.Controllers
                         await SignInManager.SignInAsync(user, isPersistent: true, rememberBrowser: false);
 
                         TempData["Success"] = "Izmene uspesno sacuvane!";
-                        return RedirectToAction("IzmeniProfil", new { userId });
+                        return RedirectToAction("IzmeniProfil");
                     }
 
                     AddErrorsFromResult(string.Empty, updateResult, emailUpdateResult);
                 }
-                ModelState.AddModelError(string.Empty, "Doslo je do greske, korisnik nije pronadjen.");
+                ModelState.AddModelError(string.Empty, "Doslo je do greske, pokušajte ponovo.");
             }
             return View(model);
         }
@@ -148,6 +143,7 @@ namespace IdentityDemo.Controllers
         [AuthorizeHelper(Roles = "Administrator")]
         public async Task<ActionResult> IzmeniPrava(string userId)
         {
+            // userID : ID korisnikia cija prava menja admin
             // Pitati profesora
             var user = await UserManager.FindByIdAsync(userId);
             if (user != null)
@@ -206,22 +202,15 @@ namespace IdentityDemo.Controllers
             return View("AdminErrorPage", (object)"Korisnik nije pronadjen, pokušajte ponovo.");
         }
 
-        // GET: /admin/sigurnost
-        //public ViewResult Sigurnost()
-        //{
-        //    return View();
-        //}
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> PromeniLozinku(ChangePasswordModel model, string userId)
+        public async Task<ActionResult> PromeniLozinku(ChangePasswordModel model)
         {
             if (Request.IsAjaxRequest())
             {
                 if (ModelState.IsValid)
                 {
-                    var user = await UserManager.FindByIdAsync(userId);
+                    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                     var result = await UserManager.ChangePasswordAsync(user.Id, model.CurrentPassword, model.NewPassword);
 
                     if (result.Succeeded)

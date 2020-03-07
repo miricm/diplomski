@@ -11,16 +11,19 @@ using Users.Infrastructure;
 namespace IdentityDemo.Controllers
 {
     [Authorize]
+    [RoutePrefix("Admin/Sigurnost")]
     public class SecurityController : Controller
     {        
-        [Route("Admin/Sigurnost")]
+        [HttpGet]
+        [Route("")]
         public ActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [Route("Omoguci2FA")] // Da je RESTful moglo bi Admin/Sigurnost
+        [ValidateAntiForgeryToken]        
         public async Task<ActionResult> EnableTwoFactorAuth()
         {
             // Omoguci 2FA

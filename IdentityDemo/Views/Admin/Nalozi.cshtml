@@ -46,7 +46,7 @@
                                     <td>@user.RoleNames</td>
                                     <td>@user.Email</td>
                                     <td>
-                                        @Html.ActionLink("Izmeni", "IzmeniPrava", new { userId = user.Id }, new { @class = "btn btn-outline-primary border-round" })
+                                        @Html.ActionLink("Izmeni", "IzmeniPrava", "Admin", new { userId = user.Id }, new { @class = "btn btn-outline-primary border-round" })
                                     </td>
                                 </tr>
                             }

@@ -25,7 +25,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div class="card-text">E-Adresa</div>
-                        <button class="btn btn-sm btn-success">Postavi</button>
+                        <form action="Sigurnost/Omoguci2FA" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-success shadow-sm">Postavi</button>
+                        </form>                        
                     </div>
                 </div>
             </div>
