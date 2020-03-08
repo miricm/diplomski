@@ -1,4 +1,6 @@
 ﻿
+@model Users.Models.SecurityViewModel
+
 @{
     ViewBag.Title = "Sigurnost";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -8,30 +10,34 @@
 <div class="col-md-6 my-5">
     <div class="d-flex justify-content-center">
         <div class="col-md-8 pt-5">
-            <div class="d-flex justify-content-between">
-                <h5>Dvofaktorska autentifikacija (2FA)</h5>
-                <button class="btn btn-sm btn-success shadow-sm">Omogući</button>
-            </div>
-            <hr />
-            <p>
+            <h3 class="text-center">Dvofaktorska autentifikacija (2FA)</h3>
+            <p class="text-center mt-3">
                 Dvofaktorska autentifikacija dodaje dodatni
                 sloj sigurnosti vašem nalogu tako da za prijavu morate
                 imati više od samo lozinke.
             </p>
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="card-title my-2">2FA metode</h5>
+            <hr />
+            @if (!Model.TwoFactorEnabled)
+            {
+                <div class="text-center mt-3">
+                    <form action="Sigurnost/Omoguci2fa" method="post">
+                        @Html.AntiForgeryToken()
+                        <button class="btn btn-sm btn-success border-round w-75 shadow-sm">Omogući 2FA</button>
+                    </form>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div class="card-text">E-Adresa</div>
-                        <form action="Sigurnost/Omoguci2FA" method="post">
+            }
+            else
+            {
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="my-auto">2FA metode</h5>
+                        <form action="Sigurnost/Onemoguci2fa" method="post">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-sm btn-success shadow-sm">Postavi</button>
-                        </form>                        
+                            <button class="btn btn-sm btn-outline-danger shadow-sm">Onemogući 2FA</button>
+                        </form>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>

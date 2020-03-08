@@ -35,8 +35,8 @@ namespace Users.Infrastructure
             manager.RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider<AppUser> 
             { 
                 // Registrovanje provajdera, napisati u dokumentaciji
-                Subject = "Vaš sigurnosni kod", 
-                BodyFormat = "Vaš sigurnosni kod je {0}"
+                Subject     = "Vaš sigurnosni kod", 
+                BodyFormat  = "Vaš sigurnosni kod je {0}"
             });
 
             manager.EmailService = new EmailService();
