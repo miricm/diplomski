@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Web;
+using System.Web.Mvc;
 using Users.Infrastructure;
 
 namespace Users.Models
@@ -33,6 +34,14 @@ namespace Users.Models
         [Required(ErrorMessage = "Lozinka je obavezna!")]
         public string Password { get; set; }
 
+        public bool RememberMe { get; set; }
+    }
+
+    public class SendCodeViewModel
+    {
+        public string SelectedProvider { get; set; }
+        public ICollection<SelectListItem> Providers { get; set; }
+        public string ReturnUrl { get; set; }
         public bool RememberMe { get; set; }
     }
 

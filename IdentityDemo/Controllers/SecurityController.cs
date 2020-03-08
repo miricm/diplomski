@@ -39,14 +39,13 @@ namespace IdentityDemo.Controllers
         public async Task<ActionResult> EnableTwoFactorAuth()
         {
             // Omoguci 2FA
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), enabled: true);
-            
-            bool isPersistant = ((System.Web.Security.FormsIdentity)User.Identity).Ticket.IsPersistent;
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            string userId = User.Identity.GetUserId();
+            await UserManager.SetTwoFactorEnabledAsync(userId, enabled: true);
+            var user = await UserManager.FindByIdAsync(userId);
 
             if (user != null)
             {
-                await SignInManager.SignInAsync(user, isPersistant, rememberBrowser: false);
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             // Ima neka greska
             return RedirectToAction("Sigurnost", "Admin");
@@ -58,14 +57,13 @@ namespace IdentityDemo.Controllers
         public async Task<ActionResult> DisableTwoFactorAuth()
         {
             // Omoguci 2FA
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), enabled: false);
-
-            var isPersistant = ((System.Web.Security.FormsIdentity)User.Identity).Ticket.IsPersistent;
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            string userId = User.Identity.GetUserId();
+            await UserManager.SetTwoFactorEnabledAsync(userId, enabled: false);
+            var user = await UserManager.FindByIdAsync(userId);
 
             if (user != null)
             {
-                await SignInManager.SignInAsync(user, isPersistant, rememberBrowser: false);
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             // Ima neka greska
             return RedirectToAction("Sigurnost", "Admin");

@@ -90,6 +90,26 @@ namespace IdentityDemo.Controllers
         }
 
         [AllowAnonymous]
+        public async Task<ActionResult> SendCode(string userId, string returnUrl, bool rememberMe)
+        {
+            if (userId == null)
+            {
+                return View("Error");
+            }
+
+            var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
+            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose })
+                                           .ToList();
+
+            return View(new SendCodeViewModel
+            {
+                Providers = factorOptions,
+                ReturnUrl = returnUrl,
+                RememberMe = rememberMe
+            });
+        }
+
+        [AllowAnonymous]
         public ActionResult Login(string returnUrl, string currentUrl)
         {
             ViewBag.ReturnUrl = returnUrl == null ? currentUrl : returnUrl.Replace("PostComment", "LoadPost");
@@ -101,37 +121,43 @@ namespace IdentityDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginModel details, string returnUrl)
         {
-            if (ModelState.IsValid)
+            //ClaimsIdentity identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            //AuthManager.SignOut();
+            //AuthManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
+
+            if (!ModelState.IsValid)
             {
-                AppUser user = await UserManager.FindAsync(details.UserName, details.Password);
+                return View(details);
+            }
 
-                if (user == null)
+            // Korisnik mora imati verifikovan e-mail
+            var user = await UserManager.FindByNameAsync(details.UserName);
+            if (user != null)
+            {
+                if (!user.EmailConfirmed)
                 {
-                    ModelState.AddModelError("", "Korisničko ime ili lozinka nisu ispravni!");
-                }
-                else
-                {
-                    //ClaimsIdentity identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-                    //AuthManager.SignOut();
-                    //AuthManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
-
-                    if (!user.EmailConfirmed)
-                    {
-                        return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
-                    }
-
-                    await SignInManager.SignInAsync(user, isPersistent: details.RememberMe, rememberBrowser: false);
-                    return Redirect(string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl);
+                    return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
                 }
             }
-            // Model nije dobar, vrati pogled
-            ViewBag.ReturnUrl = returnUrl;
-            return View(details);
+
+            var loginResult = await SignInManager.PasswordSignInAsync(details.UserName, details.Password, details.RememberMe, false);
+
+            switch (loginResult)
+            {
+                case SignInStatus.Success:
+                    return Redirect(string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl);
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { userId = user.Id, returnUrl, rememberMe = details.RememberMe });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Informacije koje ste uneli su pogrešne!");
+                    return View(details);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff(string currentUrl)
+        public ActionResult LogOff(string currentUrl, string returnUrl)
         {
             AuthManager.SignOut();
             return Redirect(string.IsNullOrEmpty(currentUrl) ? "/" : currentUrl);
