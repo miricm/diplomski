@@ -13,10 +13,11 @@ using Users.Models;
 
 namespace IdentityDemo.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         // currentUrl = Url sa kojeg je pozvana akcija
-
+        [AllowAnonymous]
         public ViewResult Register(string returnUrl, string currentUrl)
         {
             ViewBag.ReturnUrl = returnUrl == null ? currentUrl : returnUrl;
@@ -24,6 +25,7 @@ namespace IdentityDemo.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterModel model, string returnUrl)
         {
@@ -87,6 +89,7 @@ namespace IdentityDemo.Controllers
             return View(confirmResult.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+        [AllowAnonymous]
         public ActionResult Login(string returnUrl, string currentUrl)
         {
             ViewBag.ReturnUrl = returnUrl == null ? currentUrl : returnUrl.Replace("PostComment", "LoadPost");
@@ -94,6 +97,7 @@ namespace IdentityDemo.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginModel details, string returnUrl)
         {
@@ -125,7 +129,8 @@ namespace IdentityDemo.Controllers
             return View(details);
         }
 
-        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult LogOff(string currentUrl)
         {
             AuthManager.SignOut();

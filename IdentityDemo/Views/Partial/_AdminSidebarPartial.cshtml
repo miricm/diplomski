@@ -29,7 +29,11 @@
             <div class="container py-5">
                 <div class="py-5">
                     <span class="bg-light text-center my-3">@User.Identity.Name</span>
-                    <span>@Html.ActionLink("Odjava", "LogOff", "Account", null, new { @class = "btn btn-primary border-round w-100" })</span>
+                    @using(Html.BeginForm("LogOff", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <span><button type="submit" class="btn btn-primary border-round w-100">Odjava</button></span>
+                    }
                 </div>
             </div>
         </div>
