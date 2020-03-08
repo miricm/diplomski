@@ -29,14 +29,14 @@ namespace Users.Infrastructure
                 RequireLowercase = true,
                 RequireUppercase = false,
                 RequireNonLetterOrDigit = false,
-                RequireDigit = false
+                RequireDigit = true
             };
 
             manager.RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider<AppUser> 
             { 
                 // Registrovanje provajdera, napisati u dokumentaciji
-                Subject = "Security Code", 
-                BodyFormat = "Your security code is {0}"
+                Subject = "Vaš sigurnosni kod", 
+                BodyFormat = "Vaš sigurnosni kod je {0}"
             });
 
             manager.EmailService = new EmailService();

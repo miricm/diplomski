@@ -24,7 +24,7 @@ namespace Users.Infrastructure
 
             SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("miricja@gmail.com", "Caniscanem123"),
+                Credentials = new NetworkCredential("email", "sifra"),
                 EnableSsl = true
             };
 
