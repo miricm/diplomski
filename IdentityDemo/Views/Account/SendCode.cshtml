@@ -1,17 +1,30 @@
 ﻿
 @model Users.Models.SendCodeViewModel
 
-    @{
-        ViewBag.Title = "Odaberite provajdera";
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
+@{
+    ViewBag.Title = "Odaberite provajdera";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 
-    <div class="container mt-5 col-md-6">
+<div class="container mt-5">
+    <div class="py-5">
         <h1>Slanje 2FA koda</h1>
         <hr />
-        <div>
-            Odaberite 2FA provajdera
-            @Html.DropDownListFor(m => m.SelectedProvider, Model.Providers, new { @class = "form-control" })
+        <div class="row">
+            <div class="col-md-6">
+                @using (Html.BeginForm("SendCode", "Account", new { returnUrl = Model.ReturnUrl }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("rememberMe", Model.RememberMe)
+                    <div class="form-group">
+                        <label for="provajderi">Odaberite 2FA provajdera</label>
+                        @Html.DropDownListFor(m => m.SelectedProvider, Model.Providers,
+                                   new { @id = "provajderi", @class = "form-control" })
+                    </div>
+                    <button type="submit" class="btn btn-light">Pošalji</button>
+                }
+            </div>
         </div>
     </div>
+</div>

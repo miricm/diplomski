@@ -45,6 +45,22 @@ namespace Users.Models
         public bool RememberMe { get; set; }
     }
 
+    public class VerifyCodeViewModel
+    {
+        [Required]
+        public string Provider { get; set; }
+
+        [Required]
+        [Display(Name = "Verifikacioni kod")]
+        public string Code { get; set; }
+        public string ReturnUrl { get; set; }
+
+        [Display(Name = "Zapamti pretraživač?")]
+        public bool RememberBrowser { get; set; }
+
+        public bool RememberMe { get; set; }
+    }
+
     // Admin
     public class ArticleModel
     {

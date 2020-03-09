@@ -19,12 +19,16 @@ namespace Users
             app.CreatePerOwinContext(AppIdentityDbContext.Create);
             app.CreatePerOwinContext<AppUserManager>(AppUserManager.Create);
             app.CreatePerOwinContext<AppRoleManager>(AppRoleManager.Create);
-            app.CreatePerOwinContext<AppSignInManager>(AppSignInManager.Create); // Iz IdentityConfig klase
+            app.CreatePerOwinContext<AppSignInManager>(AppSignInManager.Create);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Account/Login"),
             });
+
+            // Enables the application to temporarily store user information when they are verifying 
+            // the second factor in the two-factor authentication process.
+            app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
         }
     }
 }

@@ -13,7 +13,10 @@ namespace Users.Infrastructure
     public class EmailService : IIdentityMessageService
     {
         public Task SendAsync(IdentityMessage message)
-        {            
+        {
+            string smtpName = ConfigurationManager.AppSettings["smtpUserName"];
+            string smtpPass = ConfigurationManager.AppSettings["smtpPassword"];
+
             MailAddress to = new MailAddress(message.Destination);
             MailAddress from = new MailAddress("miricja@gmail.com");
 
@@ -24,7 +27,7 @@ namespace Users.Infrastructure
 
             SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("email", "sifra"),
+                Credentials = new NetworkCredential(smtpName, smtpPass),
                 EnableSsl = true
             };
 

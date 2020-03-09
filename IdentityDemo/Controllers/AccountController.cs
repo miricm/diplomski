@@ -90,13 +90,15 @@ namespace IdentityDemo.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string userId, string returnUrl, bool rememberMe)
+        public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
+            string userId = await SignInManager.GetVerifiedUserIdAsync();
             if (userId == null)
             {
                 return View("Error");
             }
 
+            // Dohvatanje svih 2FA provajdera
             var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose })
                                            .ToList();
@@ -107,6 +109,64 @@ namespace IdentityDemo.Controllers
                 ReturnUrl = returnUrl,
                 RememberMe = rememberMe
             });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SendCode(SendCodeViewModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+            // Generisi token i posalji
+            if(!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+            {
+                return View("Error");
+            }
+            return RedirectToAction("VerifyCode", new { provider = model.SelectedProvider, returnUrl = model.ReturnUrl, rememberMe = model.RememberMe });
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
+        {
+            if(!await SignInManager.HasBeenVerifiedAsync())
+            {
+                return View("Error");
+            }
+            
+            return View(new VerifyCodeViewModel
+            {
+                Provider = provider,
+                ReturnUrl = returnUrl,
+                RememberMe = rememberMe
+            });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var loginResult = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, model.RememberMe, model.RememberBrowser);
+
+            switch (loginResult)
+            {
+                case SignInStatus.Success:
+                    return Redirect(string.IsNullOrEmpty(model.ReturnUrl) ? "/" : model.ReturnUrl);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Kod neispravan!");
+                    return View(model);
+            }
         }
 
         [AllowAnonymous]
@@ -147,7 +207,7 @@ namespace IdentityDemo.Controllers
                 case SignInStatus.Success:
                     return Redirect(string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl);
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { userId = user.Id, returnUrl, rememberMe = details.RememberMe });
+                    return RedirectToAction("SendCode", new { returnUrl, rememberMe = details.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Informacije koje ste uneli su pogrešne!");
@@ -163,7 +223,7 @@ namespace IdentityDemo.Controllers
             return Redirect(string.IsNullOrEmpty(currentUrl) ? "/" : currentUrl);
         }
 
-
+        // Alatke
         private IAuthenticationManager AuthManager
         {
             get => HttpContext.GetOwinContext().Authentication;

@@ -1,0 +1,40 @@
+﻿
+@model Users.Models.VerifyCodeViewModel
+
+@{
+    ViewBag.Title = "Verifikacija koda";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 col-md-6">
+    <div class="py-5">
+        <h1>Verifikacija koda</h1>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                @using (Html.BeginForm("VerifyCode", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("provider", Model.Provider)
+                    @Html.Hidden("rememberMe", Model.RememberMe)
+                    @Html.Hidden("returnUrl", Model.ReturnUrl)
+
+                    @Html.ValidationSummary("", new { @class = "text-danger my-3" })
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Code, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Code, new { @class = "form-control col-md-4" })
+                    </div>
+
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.RememberBrowser, new { @class = "form-check-input" })
+                        @Html.LabelFor(m => m.RememberBrowser, new { @class = "form-check-label" })
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-light">Potvrdi</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
