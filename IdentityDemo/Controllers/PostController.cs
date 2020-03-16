@@ -15,7 +15,8 @@ namespace IdentityDemo.Controllers
         // GET: Post
         public ActionResult LoadPost(int postId = -1)
         {
-            var article = Context.Articles.FindById(postId);
+            // var article = Context.Articles.FindById(postId);
+            var article = ArticleManager.FindById(postId);
 
             if(article == null)
             {
@@ -51,9 +52,9 @@ namespace IdentityDemo.Controllers
                 Text = text
             };
 
-            Context.Comments.Add(comment);
-            await Context.SaveChangesAsync();
-
+            //Context.Comments.Add(comment);
+            //await Context.SaveChangesAsync();
+            await ArticleManager.CreateCommentAsync(comment);
             return RedirectToAction("LoadPost", new { postId = article.Id });
         }
 

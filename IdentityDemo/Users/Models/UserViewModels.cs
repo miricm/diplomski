@@ -8,6 +8,7 @@ using System.Data.Entity;
 using System.Web;
 using System.Web.Mvc;
 using Users.Infrastructure;
+using CompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
 namespace Users.Models
 {
@@ -59,6 +60,34 @@ namespace Users.Models
         public bool RememberBrowser { get; set; }
 
         public bool RememberMe { get; set; }
+    }
+
+    public class ForgotPasswordViewModel
+    {
+        [Required(ErrorMessage = "E-adresa je obavezna!")]
+        [EmailAddress]
+        [Display(Name = "E-adresa")]
+        public string Email { get; set; }
+    }
+
+    public class ResetPasswordViewModel
+    {
+        [Required(ErrorMessage = "E-adresa je obavezna!")]
+        [EmailAddress]
+        [Display(Name = "E-adresa")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Niste uneli lozinku!")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Nova lozinka")]
+        public string Password { get; set; }
+        
+        [DataType(DataType.Password)]
+        [Display(Name = "Potvrdi lozinku")]
+        [Compare("Password", ErrorMessage = "Potvrdna lozinka i nova lozinka se ne poklapaju!")]
+        public string ConfirmPassword { get; set; }
+
+        public string Code { get; set; }
     }
 
     // Admin
@@ -130,5 +159,14 @@ namespace Users.Models
         public string PhoneNumber { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public bool BrowserRemembered { get; set; }        
+    }
+
+    public class ConfirmPasswordViewModel
+    {
+        public string ReturnUrl { get; set; }
+
+        [Required(ErrorMessage = "Trenutna lozinka je obavezna!")]
+        [Display(Name = "Trenutna lozinka")]
+        public string Password { get; set; }
     }
 }

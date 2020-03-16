@@ -133,8 +133,9 @@ namespace IdentityDemo.Controllers
                     DatePublished = DateTime.Now
                 };
 
-                Context.Articles.Add(article);
-                await Context.SaveChangesAsync();
+                //Context.Articles.Add(article);
+                //await Context.SaveChangesAsync();
+                await ArticleManager.CreateArticleAsync(article);
                 ViewBag.PostSuccess = "Artikal uspešno objavljen!";
             }
             return View(articleModel);

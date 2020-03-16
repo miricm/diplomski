@@ -1944,6 +1944,7 @@
     <Compile Include="Users\Infrastructure\AppRoleManager.cs" />
     <Compile Include="Users\Infrastructure\AppSignInManager.cs" />
     <Compile Include="Users\Infrastructure\AppUserManager.cs" />
+    <Compile Include="Users\Infrastructure\ArticleManager.cs" />
     <Compile Include="Users\Infrastructure\AuthorizeHelper.cs" />
     <Compile Include="Users\Infrastructure\CustomExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1991,6 +1992,11 @@
     <Content Include="Views\Account\SendCode.cshtml" />
     <Content Include="Views\Account\VerifyCode.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Security\ConfirmPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -20,7 +20,7 @@
                     <div class="form-group">
                         <label for="provajderi">Odaberite 2FA provajdera</label>
                         @Html.DropDownListFor(m => m.SelectedProvider, Model.Providers,
-                                   new { @id = "provajderi", @class = "form-control" })
+                                   new { @id = "provajderi", @class = "form-control col-md-4 col-sm-4" })
                     </div>
                     <button type="submit" class="btn btn-light">Pošalji</button>
                 }

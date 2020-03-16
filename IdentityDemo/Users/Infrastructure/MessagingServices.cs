@@ -25,7 +25,7 @@ namespace Users.Infrastructure
             mail.Body = message.Body;
             mail.IsBodyHtml = true;
 
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
+            SmtpClient client = new SmtpClient("smtp.gmail.com", port: 587)
             {
                 Credentials = new NetworkCredential(smtpName, smtpPass),
                 EnableSsl = true

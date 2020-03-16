@@ -121,7 +121,7 @@ namespace IdentityDemo.Controllers
                 return View();
             }
             // Generisi token i posalji
-            if(!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+            if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
             {
                 return View("Error");
             }
@@ -154,7 +154,8 @@ namespace IdentityDemo.Controllers
                 return View(model);
             }
 
-            var loginResult = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, model.RememberMe, model.RememberBrowser);
+            var loginResult = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, 
+                                                           model.RememberMe, model.RememberBrowser);
 
             switch (loginResult)
             {
@@ -164,7 +165,7 @@ namespace IdentityDemo.Controllers
                     return View("Lockout");
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Kod neispravan!");
+                    ModelState.AddModelError("", "Kod koji ste uneli nije tačan!");
                     return View(model);
             }
         }
@@ -194,13 +195,13 @@ namespace IdentityDemo.Controllers
             var user = await UserManager.FindByNameAsync(details.UserName);
             if (user != null)
             {
-                if (!user.EmailConfirmed)
-                {
+                if (!user.EmailConfirmed) // ILI await UserManager.IsEmailConfirmedAsync(user.Id)
+                    {
                     return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
                 }
             }
 
-            var loginResult = await SignInManager.PasswordSignInAsync(details.UserName, details.Password, details.RememberMe, false);
+            var loginResult = await SignInManager.PasswordSignInAsync(details.UserName, details.Password, details.RememberMe, shouldLockout: false);
 
             switch (loginResult)
             {
@@ -215,9 +216,93 @@ namespace IdentityDemo.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public ViewResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var user = await UserManager.FindByEmailAsync(model.Email);
+            if (user == null || !await UserManager.IsEmailConfirmedAsync(user.Id))
+            {
+                // Ne otkrivati da korisnik ne postoji ili da nije verifikovan email
+                return View("ForgotPasswordConfirmation");
+            }
+            // Generisi kod i link
+            string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+            var callbackUrl = Url.Action(
+                actionName: "ResetPassword",
+                controllerName: "Account",
+                new { userId = user.Id, code },
+                protocol: Request.Url.Scheme
+            );
+            // Posalji email sa kodom
+            await UserManager.SendEmailAsync(user.Id, "[WEBTECH] Resetovanje lozinke",
+                $"Resetujte lozinku klikom na link: <a href='{callbackUrl}'>link</a>.");
+
+            return RedirectToAction("ForgotPasswordConfirmation", "Account");
+        }
+
+        // Pokrece se preko linka poslatog preko mail-a
+        // GET: /Account/ResetPassword
+        [AllowAnonymous]
+        public ViewResult ResetPassword(string code)
+        {
+            return string.IsNullOrEmpty(code) ? View("Error") : View(new ResetPasswordViewModel { Code = code });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await UserManager.FindByEmailAsync(model.Email);
+            if(user == null)
+            {
+                // Korisnik ne postoji, ne otkrivaj
+                return View("ResetPasswordConfirmation");
+            }
+            // Resetuj lozinku
+            var resetResult = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            if (resetResult.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            AddErrorsFromResult(resetResult);
+            return View();
+        }
+
+        // GET: /Account/ForgotPasswordConfirmation
+        [AllowAnonymous]
+        public ViewResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public ViewResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff(string currentUrl, string returnUrl)
+        public ActionResult LogOff(string currentUrl)
         {
             AuthManager.SignOut();
             return Redirect(string.IsNullOrEmpty(currentUrl) ? "/" : currentUrl);

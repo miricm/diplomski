@@ -50,9 +50,12 @@
                                     @Html.PasswordFor(m => m.Password, new { @class = "form-control border-round", @type = "password", @id = "password" })
                                 </div>
 
-                                <div class="form-check">
-                                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input", @id = "rememberMe" })
-                                    <label for="rememberMe" class="form-check-label">Zapamti me?</label>
+                                <div class="form-check d-flex justify-content-between">
+                                    <div>
+                                        @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input", @id = "rememberMe" })
+                                        <label for="rememberMe" class="form-check-label">Zapamti me?</label>
+                                    </div>
+                                    <a href="/Account/ForgotPassword" class="text-sm">Zaboravili ste lozinku?</a>
                                 </div>
 
                                 <div class="form-group">
@@ -60,7 +63,7 @@
                                 </div>
                             }
                             <div class="card-footer">
-                                <p class="card-text">Nemate nalog? @Html.ActionLink("registrujte se", "Register", "Account", null, null)</p>
+                                <p class="card-text">Nemate nalog? <a href="/Account/Register">registrujte se</a></p>
                             </div>
                         </div>
                     </div>

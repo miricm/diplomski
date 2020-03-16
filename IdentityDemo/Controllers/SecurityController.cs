@@ -15,7 +15,7 @@ namespace IdentityDemo.Controllers
     [Authorize]
     [RoutePrefix("Admin/Sigurnost")]
     public class SecurityController : Controller
-    {        
+    {
         [HttpGet]
         [Route("")]
         public async Task<ActionResult> Index()
@@ -35,7 +35,7 @@ namespace IdentityDemo.Controllers
 
         [HttpPost]
         [Route("Omoguci2fa")] // Da je RESTful moglo bi Admin/Sigurnost
-        [ValidateAntiForgeryToken]        
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> EnableTwoFactorAuth()
         {
             // Omoguci 2FA
@@ -45,7 +45,7 @@ namespace IdentityDemo.Controllers
 
             if (user != null)
             {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                return RedirectToAction("ConfirmPassword", new { returnUrl = "/Admin/Sigurnost" });
             }
             // Ima neka greska
             return RedirectToAction("Sigurnost", "Admin");
@@ -67,6 +67,41 @@ namespace IdentityDemo.Controllers
             }
             // Ima neka greska
             return RedirectToAction("Sigurnost", "Admin");
+        }
+
+        [HttpGet]
+        [Route("PotvrdiLozinku")]
+        public ViewResult ConfirmPassword(string returnUrl)
+        {
+            return View(new ConfirmPasswordViewModel { ReturnUrl = returnUrl });
+        }
+
+        [HttpPost]
+        [Route("PotvrdiLozinku")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ConfirmPassword(ConfirmPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userName = User.Identity.GetUserName();
+            var loginResult = await SignInManager.PasswordSignInAsync(userName, model.Password, 
+                isPersistent: false, shouldLockout: false);
+
+            switch (loginResult)
+            {
+                case SignInStatus.Success:
+                    return Redirect(model.ReturnUrl);
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", "Account", new { returnUrl = model.ReturnUrl, 
+                                                                        rememberMe = false });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Uneta lozinka je neispravna!");
+                    return View(model);
+            }
         }
 
 
