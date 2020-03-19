@@ -90,6 +90,21 @@ namespace Users.Models
         public string Code { get; set; }
     }
 
+    public class ExternalLoginListViewModel
+    {
+        public string ReturnUrl { get; set; }
+    }
+
+    public class ExternalLoginConfirmModel
+    {        
+        [Display(Name = "E-Adresa")]
+        [Required(ErrorMessage = "E-Adresa je obavezna!")]
+        [EmailAddress(ErrorMessage = "Format e-adrese nije validan!")] // Isto kao DataTypeAttr., ali vrsi i validaciju
+        public string Email { get; set; }
+
+        public string ReturnUrl { get; set; }
+    }
+
     // Admin
     public class ArticleModel
     {

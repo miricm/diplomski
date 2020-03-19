@@ -1,0 +1,35 @@
+﻿
+@model Users.Models.ExternalLoginConfirmModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Potvrda prijave";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-center">
+        <div class="col-md-5">
+            <h3>Povežite vaš @ViewBag.LoginProvider nalog</h3>
+            @Html.ValidationSummary("", new { @class = "text-danger my-auto" })
+            <form action="/Account/ExternalLoginConfirm" method="post">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.ReturnUrl)
+                <p>
+                    <small>
+                        Uspešno ste se verifikovali vaš @ViewBag.LoginProvider nalog.
+                        Unesite korisničko ime za vašu WebTech e-adresu kako biste završili prijavu.
+                    </small>
+                </p>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-light">Prijava</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

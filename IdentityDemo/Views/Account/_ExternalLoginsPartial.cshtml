@@ -1,0 +1,29 @@
+﻿
+@model Users.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        @{
+            var externalProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+
+            if (externalProviders.Count() == 0)
+            {
+                <p class="my-auto text-center">Nijedan eksterni provajder nije konfigurisan</p>
+            }
+            else
+            {
+                <form action="/Account/ExternalLogin" method="post">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.ReturnUrl)
+                    <div id="provajderi">
+                        @foreach (var p in externalProviders)
+                        {
+                            <button type="submit" class="btn btn-sm btn-outline-primary w-100" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType">@p.AuthenticationType prijava</button>
+                        }
+                    </div>
+                </form>
+            }
+        }
+    </div>
+</div>

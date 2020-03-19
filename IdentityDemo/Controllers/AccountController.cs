@@ -116,7 +116,7 @@ namespace IdentityDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SendCode(SendCodeViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View();
             }
@@ -131,11 +131,11 @@ namespace IdentityDemo.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
-            if(!await SignInManager.HasBeenVerifiedAsync())
+            if (!await SignInManager.HasBeenVerifiedAsync())
             {
                 return View("Error");
             }
-            
+
             return View(new VerifyCodeViewModel
             {
                 Provider = provider,
@@ -154,7 +154,7 @@ namespace IdentityDemo.Controllers
                 return View(model);
             }
 
-            var loginResult = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, 
+            var loginResult = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code,
                                                            model.RememberMe, model.RememberBrowser);
 
             switch (loginResult)
@@ -196,7 +196,7 @@ namespace IdentityDemo.Controllers
             if (user != null)
             {
                 if (!user.EmailConfirmed) // ILI await UserManager.IsEmailConfirmedAsync(user.Id)
-                    {
+                {
                     return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
                 }
             }
@@ -272,7 +272,7 @@ namespace IdentityDemo.Controllers
             }
 
             var user = await UserManager.FindByEmailAsync(model.Email);
-            if(user == null)
+            if (user == null)
             {
                 // Korisnik ne postoji, ne otkrivaj
                 return View("ResetPasswordConfirmation");
@@ -285,6 +285,82 @@ namespace IdentityDemo.Controllers
             }
             AddErrorsFromResult(resetResult);
             return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExternalLogin(ExternalLoginListViewModel model, string provider)
+        {
+            var url = Url.Action("ExternalLoginCallback", "Account", new { returnUrl = model.ReturnUrl });
+            // Zahteva preusmeravanja ka ekternom provajderu
+            return new ChallengeResult(provider, url);
+        }
+
+        // GET: /Account/ExternalLoginCallback
+        [AllowAnonymous]
+        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
+        {
+            var loginInfo = await AuthManager.GetExternalLoginInfoAsync();
+            if (loginInfo == null)
+            {
+                return Redirect("/Account/Login");
+            }
+
+            var loginResult = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+            switch (loginResult)
+            {
+                case SignInStatus.Success:
+                    return Redirect(string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { returnUrl, rememberMe = false });
+                case SignInStatus.Failure:
+                default:
+                    // Ponuditi korisnika da napravi nalog, ako nema
+                    // ViewBag.ReturnUrl = returnUrl;
+                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                    return View("ExternalLoginConfirm", new ExternalLoginConfirmModel { Email = loginInfo.Email, ReturnUrl = returnUrl });
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ExternalLoginConfirm(ExternalLoginConfirmModel model)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Redirect("/");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Dohvati info o korisniku od provajdera
+                var loginInfo = await AuthManager.GetExternalLoginInfoAsync();
+                if (loginInfo == null)
+                {
+                    return View("ExternalLoginFailure");
+                }
+                var user = await UserManager.FindByEmailAsync(model.Email);
+                if(user == null)
+                {
+                    // Korisnik ne postoji, registruj ga
+                }
+                else
+                {
+                    var addLoginResult = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
+                    if (addLoginResult.Succeeded)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        return Redirect(string.IsNullOrEmpty(model.ReturnUrl) ? "/" : model.ReturnUrl);
+                    }
+                    AddErrorsFromResult(addLoginResult);
+                }
+            }
+            // Los model
+            return View(model);
         }
 
         // GET: /Account/ForgotPasswordConfirmation
@@ -308,7 +384,8 @@ namespace IdentityDemo.Controllers
             return Redirect(string.IsNullOrEmpty(currentUrl) ? "/" : currentUrl);
         }
 
-        // Alatke
+        #region Alatke
+
         private IAuthenticationManager AuthManager
         {
             get => HttpContext.GetOwinContext().Authentication;
@@ -331,5 +408,37 @@ namespace IdentityDemo.Controllers
                 }
             }
         }
+        private const string XsrfKey = "XsrfId";
+        internal class ChallengeResult : HttpUnauthorizedResult
+        {
+            public ChallengeResult(string provider, string redirectUri)
+                : this(provider, redirectUri, null)
+            { }
+
+            public ChallengeResult(string provider, string redirectUri, string userId)
+            {
+                LoginProvider = provider;
+                ReturnUri = redirectUri;
+                UserId = userId;
+            }
+
+            public string ReturnUri { get; set; }
+            public string UserId { get; set; }
+            public string LoginProvider { get; set; }
+
+            public override void ExecuteResult(ControllerContext context)
+            {
+                //base.ExecuteResult(context);
+
+                var properties = new AuthenticationProperties { RedirectUri = ReturnUri };
+                if (!string.IsNullOrEmpty(UserId))
+                {
+                    properties.Dictionary[XsrfKey] = UserId;
+                }
+                context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
+            }
+        }
+
+        #endregion Alatke
     }
 }
