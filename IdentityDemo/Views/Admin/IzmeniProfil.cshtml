@@ -81,9 +81,9 @@
     </div>
 
     <!-- Menjanje lozinke -->
-    <div id="promenaLozinke">
-        @Html.Partial("~/Views/Partial/_ChangePasswordPartial.cshtml", new Users.Models.ChangePasswordModel())
-    </div>
+    <section id="promenaLozinke">
+        @Html.Partial("~/Views/Partial/_ChangePasswordPartial.cshtml", new Users.Models.ChangePasswordModel { HasPassword = Model.HasPassword })
+    </section>
 </div>
 
 <script>

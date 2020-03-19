@@ -325,6 +325,7 @@ namespace IdentityDemo.Controllers
             }
         }
 
+        // POST: /Account/ExternalLoginConfirm
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -344,22 +345,36 @@ namespace IdentityDemo.Controllers
                     return View("ExternalLoginFailure");
                 }
                 var user = await UserManager.FindByEmailAsync(model.Email);
-                if(user == null)
+
+                if (user == null)
                 {
-                    // Korisnik ne postoji, registruj ga
-                }
-                else
-                {
-                    var addLoginResult = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
-                    if (addLoginResult.Succeeded)
+                    // Korisnik nema nalog, registruj ga
+                    user = new AppUser 
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return Redirect(string.IsNullOrEmpty(model.ReturnUrl) ? "/" : model.ReturnUrl);
+                        UserName = loginInfo.DefaultUserName, 
+                        Email = loginInfo.Email, 
+                        DateRegistered = DateTime.Now,
+                        ProfilePicture = UserManager.SetDefaultProfilePicture()
+                    };
+
+                    var createResult = await UserManager.CreateAsync(user);
+                    var addToRole = await UserManager.AddToRoleAsync(user.Id, "Korisnik");
+                    if (!createResult.Succeeded || !addToRole.Succeeded)
+                    {
+                        AddErrorsFromResult(createResult, addToRole);
+                        return View(model);
                     }
-                    AddErrorsFromResult(addLoginResult);
                 }
+                // Korisnik vec ima nalog
+                var addLoginResult = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
+                if (addLoginResult.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    return Redirect(string.IsNullOrEmpty(model.ReturnUrl) ? "/" : model.ReturnUrl);
+                }
+                AddErrorsFromResult(addLoginResult);
             }
-            // Los model
+            // Nevalidan model
             return View(model);
         }
 
@@ -374,6 +389,34 @@ namespace IdentityDemo.Controllers
         public ViewResult ResetPasswordConfirmation()
         {
             return View();
+        }
+        
+        public ViewResult AddPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddPassword(AddPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string userId = User.Identity.GetUserId();
+            if(!await UserManager.HasPasswordAsync(userId))
+            {
+                var addResult = await UserManager.AddPasswordAsync(userId, model.Password);
+                if (addResult.Succeeded)
+                {
+                    return RedirectToAction("IzmeniProfil", "Admin");
+                }
+                AddErrorsFromResult(addResult);
+            }
+            // Korisnik vec ima lozinku
+            return View(model);
         }
 
         [HttpPost]

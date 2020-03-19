@@ -27,15 +27,22 @@ namespace IdentityDemo.Controllers
 
         public async Task<ActionResult> IzmeniProfil()
         {
-            AppUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            AccountModifyModel model = new AccountModifyModel
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            if(user == null)
+            {
+                // Ne otkrivaj da korisnik ne postoji
+                return View("Error");
+            }
+
+            var model = new AccountModifyModel
             {
                 UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 DateRegistered = user.DateRegistered,
-                CurrentProfilePicture = user.ProfilePicture
+                CurrentProfilePicture = user.ProfilePicture,
+                HasPassword = await UserManager.HasPasswordAsync(user.Id)
             };
             return View(model);
         }

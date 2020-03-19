@@ -105,6 +105,19 @@ namespace Users.Models
         public string ReturnUrl { get; set; }
     }
 
+    public class AddPasswordViewModel
+    {
+        [Display(Name = "Lozinka")]
+        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Lozinka je obavezna!")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Potvrdi lozinku")]        
+        [Compare("Password", ErrorMessage = "Lozinke se ne poklapaju")]
+        public string ConfirmPassword { get; set; }
+    }
+
     // Admin
     public class ArticleModel
     {
@@ -146,10 +159,14 @@ namespace Users.Models
         [Required(ErrorMessage = "E-Adresa je obavezna!")]
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail format neispravan!")]
         public string Email { get; set; }
+
+        public bool HasPassword { get; set; }
     }
 
     public class ChangePasswordModel
     {
+        public bool HasPassword { get; set; }        
+
         [Required]
         public string CurrentPassword { get; set; }
 
