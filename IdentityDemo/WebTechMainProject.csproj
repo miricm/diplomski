@@ -2006,6 +2006,7 @@
     <Content Include="Views\Account\ExternalLoginConfirm.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\AddPassword.cshtml" />
+    <Content Include="Views\Admin\Objave.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

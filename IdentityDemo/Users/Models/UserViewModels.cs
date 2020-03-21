@@ -23,6 +23,10 @@ namespace Users.Models
 
         [Required(ErrorMessage = "Lozinka je obavezna!")]
         public string Password { get; set; }
+        
+        [Required(ErrorMessage = "Morate potvrditi lozinku!")]
+        [Compare("Password", ErrorMessage = "Lozinke se ne poklapaju!")]
+        public string ConfirmPassword { get; set; }
 
         public bool RememberMe { get; set; }
     }
@@ -182,6 +186,11 @@ namespace Users.Models
         public string UserName { get; set; }
         public IEnumerable<string> AllRoles { get; set; }
         public Dictionary<string, bool> IsInRole { get; set; }
+    }
+
+    public class UserPostsModel
+    {
+        public IEnumerable<Article> Articles { get; set; }
     }
 
     // Security

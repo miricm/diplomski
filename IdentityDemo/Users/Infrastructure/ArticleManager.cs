@@ -24,17 +24,34 @@ namespace Users.Infrastructure
 
         public static Article FindById(int articleId)
         {
-            if(articleId == -1)
-            {
-                return null;
-            }
-
-            return DbContext.Articles.Where(a => a.Id == articleId).FirstOrDefault();
+            var articles = DbContext.Articles.Where(a => a.Id == articleId);
+            return articles.Count() == 0 ? null : articles.FirstOrDefault();
         }
 
         public static IEnumerable<Article> GetArticles
         {
             get => DbContext.Articles;
+        }
+
+        public static IEnumerable<Article> GetArticlesForUser(string userId)
+        {
+            return DbContext.Articles.Where(a => a.Author.Id == userId).ToList();
+        }
+
+        public static async Task<bool> DeleteAsync(Article article)
+        {
+            try
+            {
+                var articleComments = DbContext.Comments.Where(c => c.Article.Id == article.Id);
+                DbContext.Comments.RemoveRange(articleComments);
+                DbContext.Articles.Remove(article);                
+                await DbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         private static AppIdentityDbContext DbContext

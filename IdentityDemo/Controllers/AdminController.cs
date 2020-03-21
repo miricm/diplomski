@@ -109,6 +109,35 @@ namespace IdentityDemo.Controllers
             return View(users);
         }
 
+        [AuthorizeHelper(Roles = "Autor")]
+        public ViewResult Objave()
+        {
+            var articles = ArticleManager.GetArticlesForUser(User.Identity.GetUserId());
+            return View(new UserPostsModel { Articles = articles });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ObrisiObjavu(int postId = -1)
+        {
+            var article = ArticleManager.FindById(postId);
+            if(article == null)
+            {
+                // Ne otkrivati da ne postoji
+                return View("AdminErrorPage");
+            }
+
+            if(article.Author.Id == User.Identity.GetUserId())
+            {
+                if (await ArticleManager.DeleteAsync(article))
+                {
+                    return RedirectToAction("Objave");
+                }                
+            }
+            // Doslo je do modifikacije id-a objave, ili nije uspelo brisanje
+            return View("AdminErrorPage");
+        }
+
         [AuthorizeHelper(Roles = "Autor, Moderator, Administrator")]
         public ViewResult Objavi()
         {
@@ -173,7 +202,7 @@ namespace IdentityDemo.Controllers
 
                 return View(model);
             }
-            return View("AdminErrorPage", (object)"Korisnik nije pronadjen, pokušajte ponovo.");
+            return View("AdminErrorPage");
         }
 
         [HttpPost]
@@ -207,7 +236,7 @@ namespace IdentityDemo.Controllers
                 return Json("Uloge uspešno izmenjene.");
             }
             // Korisnik ne postoji
-            return View("AdminErrorPage", (object)"Korisnik nije pronadjen, pokušajte ponovo.");
+            return View("AdminErrorPage");
         }
 
         [HttpPost]
@@ -270,7 +299,7 @@ namespace IdentityDemo.Controllers
 
 
 
-        // Alatke
+        #region Alatke
         private AppIdentityDbContext Context
         {
             get => HttpContext.GetOwinContext().Get<AppIdentityDbContext>();
@@ -301,6 +330,6 @@ namespace IdentityDemo.Controllers
                 }
             }
         }
-
+        #endregion Alatke
     }
 }

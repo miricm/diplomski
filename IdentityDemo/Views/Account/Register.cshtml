@@ -59,6 +59,11 @@
                                 @Html.PasswordFor(m => m.Password, new { @class = "form-control border-round", @type = "password", @id = "password" })
                             </div>
 
+                            <div class="form-group">
+                                <label for="confirmPass">Potvrdite lozinku</label>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { id = "confirmPass", @class = "form-control border-round" })
+                            </div>
+
                             <div class="form-check">
                                 @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input", @id = "rememberMe" })
                                 <label for="rememberMe" class="form-check-label">Zapamti me?</label>

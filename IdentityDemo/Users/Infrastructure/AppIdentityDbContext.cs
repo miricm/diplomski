@@ -24,10 +24,10 @@ namespace Users.Infrastructure
             return new AppIdentityDbContext();
         }
 
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-        //}
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 
     public class IdentityDbInit : NullDatabaseInitializer<AppIdentityDbContext>
