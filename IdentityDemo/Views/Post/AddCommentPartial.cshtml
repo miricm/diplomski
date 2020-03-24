@@ -1,0 +1,14 @@
+﻿
+@model Users.Models.AddCommentViewModel
+
+<p>Ostavite svoj komentar</p>
+<!-- Moze biti i AJAX -->
+
+<small class="text-danger my-5">@TempData["ValidationError"]</small>
+
+<form action="@Model.ArticleId" method="post">
+    @Html.AntiForgeryToken()
+    <textarea name="text" class="form-control border-round" rows="5" placeholder="Komentar..."></textarea>
+    <button type="submit" class="btn btn-primary border-round mt-2">Posalji</button>
+</form>
+

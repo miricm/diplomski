@@ -1,0 +1,44 @@
+﻿
+@model IEnumerable<Users.Models.Article>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Count() == 0)
+{
+    <h1 class="text-center">Ne postoji ni jedan artikal pod ovom kategorijom</h1>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col my-auto"><hr class="separator bg-dark" /></div>
+            <div class="col my-auto"><h2 class="heading-black text-center">@ViewBag.Title</h2></div>
+            <div class="col my-auto"><hr class="separator bg-dark my-auto" /></div>
+        </div>
+
+        @foreach (var a in Model)
+        {
+            <div class="row my-4">
+                <div class="col-md-4 my-2">
+                    <div class="card card-mini shadow-sm">
+                        <img src="data:image/jpg;base64,@Convert.ToBase64String(a.Image)" alt="" class="card-img-top" height="230" />
+                        <div class="card-body">
+                            <a href="/Artikli/@a.Id" class="card-title">@a.Title</a>
+                        </div>
+                        <div class="d-flex p-2">
+                            <div class="my-auto">
+                                <img src="data:image/jpg;base64,@Convert.ToBase64String(a.Author.ProfilePicture)" class="profilepic-sm"/>
+                            </div>
+                            <div class="mx-2 my-auto">
+                                <small>@a.Author.FirstName @a.Author.LastName</small><br />
+                                <small>@a.DatePublished.ToString("MMMM yyyy")</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

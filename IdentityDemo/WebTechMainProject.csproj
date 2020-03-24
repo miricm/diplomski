@@ -2007,6 +2007,8 @@
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\AddPassword.cshtml" />
     <Content Include="Views\Admin\Objave.cshtml" />
+    <Content Include="Views\Post\Kategorije.cshtml" />
+    <Content Include="Views\Post\AddCommentPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

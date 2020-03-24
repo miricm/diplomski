@@ -2,7 +2,6 @@
 
 @if (Request.IsAuthenticated)
 {
-
     <li class="nav-item active mx-2 my-auto dropdown">
         <!-- Staviti profilnu sliku -->
         <img id="profilnaSlika" src="" alt="Profilna Slika" class="profilepic-sm shadow-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
@@ -38,6 +37,7 @@
 
             @if (User.IsInRole("Autor"))
             {
+                <a href="/Admin/Objave" class="dropdown-item">Objave</a>
                 @Html.ActionLink("Nova objava", "Objavi", "Admin", null, new { @class = "dropdown-item font-weight-bold" })
             }
 
@@ -49,7 +49,6 @@
             }
         </div>
     </li>
-
 }
 else
 {

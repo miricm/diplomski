@@ -9,12 +9,6 @@ namespace Users.Infrastructure
 {
     public static class CustomExtensionMethods
     {
-        public static Article FindById(this IEnumerable<Article> articles, int articleId)
-        {
-            var target = articles.Where(a => a.Id == articleId);
-            return target.Count() == 0 ? null : target.SingleOrDefault();
-        }
-
         public static byte[] ToByteArray(this HttpPostedFileBase file)
         {
             if(file == null)

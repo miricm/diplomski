@@ -16,7 +16,7 @@
                 <div class="card my-2">
                     <img class="img-fluid" src="data:image/jpg;base64,@Convert.ToBase64String(article.Image)" alt="Slika nekih developera" />
                     <div class="card-body bg-dark">
-                        @Html.ActionLink(article.Title, "LoadPost", "Post", new { postId = article.Id }, new { @class = "card-title card-title-white" })
+                        <a href="/Artikli/@article.Id" class="card-title card-title-white">@article.Title</a>
                     </div>
                     <div class="card-footer bg-dark d-flex">
                         <div class="my-auto">
@@ -39,7 +39,7 @@
                 <div class="card my-2">
                     <img class="img-fluid" src="data:image/jpg;base64,@Convert.ToBase64String(article.Image)" alt="Slika nekih developera" />
                     <div class="card-body bg-dark">
-                        <a class="card-title card-title-white" href="#">@article.Title</a>
+                        <a href="/Artikli/@article.Id" class="card-title card-title-white">@article.Title</a>
                     </div>
                     <div class="card-footer bg-dark d-flex">
                         <div class="my-auto">

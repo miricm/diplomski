@@ -191,18 +191,19 @@ namespace IdentityDemo.Controllers
                 return View(details);
             }
 
-            // Korisnik mora imati verifikovan e-mail
-            var user = await UserManager.FindByNameAsync(details.UserName);
-            if (user != null)
-            {
-                if (!user.EmailConfirmed) // ILI await UserManager.IsEmailConfirmedAsync(user.Id)
-                {
-                    return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
-                }
-            }
+            // Korisnik mora imati verifikovan e-mail, ako nema salje mu se potvrda
+            // Odkomentarisati kod ispod
+
+            //var user = await UserManager.FindByNameAsync(details.UserName);
+            //if (user != null)
+            //{
+            //    if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+            //    {
+            //        return RedirectToAction("SendVerificationEmail", new { userId = user.Id });
+            //    }
+            //}
 
             var loginResult = await SignInManager.PasswordSignInAsync(details.UserName, details.Password, details.RememberMe, shouldLockout: false);
-
             switch (loginResult)
             {
                 case SignInStatus.Success:

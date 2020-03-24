@@ -28,6 +28,11 @@ namespace Users.Infrastructure
             return articles.Count() == 0 ? null : articles.FirstOrDefault();
         }
 
+        public static IEnumerable<Article> FindByCategory(string value)
+        {
+            return DbContext.Articles.Where(a => a.Category == value).ToList();
+        }
+
         public static IEnumerable<Article> GetArticles
         {
             get => DbContext.Articles;
@@ -50,7 +55,8 @@ namespace Users.Infrastructure
             }
             catch (Exception ex)
             {
-                throw ex;
+                // throw ex;
+                return false;
             }
         }
 

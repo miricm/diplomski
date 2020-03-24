@@ -1,6 +1,6 @@
 ﻿
-@model Users.Models.Article
-@using Microsoft.AspNet.Identity
+@using Users.Models
+@model Article
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -57,17 +57,9 @@
 
                         <hr />
 
-                        <p>Ostavite svoj komentar</p>
-                        <p id="emptyCommentError" class="text-danger ml-3">@TempData["EmptyCommentError"]</p>
-
-                        <!-- Moze biti i AJAX -->
-
-                        @using (Html.BeginForm("PostComment", "Post", new { postId = Model.Id, userId = User.Identity.GetUserId() }, FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
-                            <textarea name="text" class="form-control border-round" rows="5" placeholder="Komentar..."></textarea>
-                            <button type="submit" class="btn btn-primary border-round mt-2">Posalji</button>
-                        }
+                        <section id="novKomentar">
+                            @Html.Partial("AddCommentPartial", new AddCommentViewModel { ArticleId = Model.Id })
+                        </section>
 
                     </div>
                 </div>

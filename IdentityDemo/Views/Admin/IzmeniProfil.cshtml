@@ -35,6 +35,9 @@
                 @using (Html.BeginForm("IzmeniProfil", "Admin", new { userId = User.Identity.GetUserId() }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m=>m.CurrentProfilePicture)
+                    @Html.HiddenFor(m=>m.HasPassword)
+
                     <div class="card-body">
                         @Html.ValidationSummary("", new { @class = "text-danger my-3" })
 

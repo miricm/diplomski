@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.Owin;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,15 @@ using Users.Models;
 
 namespace IdentityDemo.Controllers
 {
+    [RoutePrefix("Artikli")]
     public class PostController : Controller
     {
         // GET: Post
-        public ActionResult LoadPost(int postId = -1)
+        [Route("{articleId}")]
+        public ActionResult LoadPost(int articleId = -1)
         {
-            // var article = Context.Articles.FindById(postId);
-            var article = ArticleManager.FindById(postId);
+            // var article = Context.Articles.FindById(articleId);
+            var article = ArticleManager.FindById(articleId);
 
             if(article == null)
             {
@@ -29,37 +32,45 @@ namespace IdentityDemo.Controllers
 
         [HttpPost]
         [Authorize]
+        [Route("{articleId}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> PostComment(int postId, string userId, string text)
+        public async Task<ActionResult> PostComment(AddCommentViewModel model)
         {
-            // Promeniti u AJAX?   
-            // text: tekst komentara
-
-            var article = Context.Articles.FindById(postId);
-            var user = await UserManager.FindByIdAsync(userId);
-
-            if (string.IsNullOrEmpty(text) || user == null)
+            if (!ModelState.IsValid)
             {
-                TempData["EmptyCommentError"] = "Tekst komentara je obavezan!";
-                return RedirectToAction("LoadPost", new { postId = article.Id });
+                TempData["ValidationError"] = "Niste uneli komentar!";
+                return Redirect($"/Artikli/{model.ArticleId}");
             }
 
-            Comment comment = new Comment
-            {
-                Article = article,
-                DatePublished = DateTime.Now,
-                PostedBy = user,
-                Text = text
-            };
+            var article = ArticleManager.FindById(model.ArticleId);
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            //Context.Comments.Add(comment);
-            //await Context.SaveChangesAsync();
-            await ArticleManager.CreateCommentAsync(comment);
-            return RedirectToAction("LoadPost", new { postId = article.Id });
+            if (article != null && user != null)
+            {
+                Comment comment = new Comment
+                {
+                    Article = article,
+                    DatePublished = DateTime.Now,
+                    PostedBy = user,
+                    Text = model.Text
+                };
+
+                await ArticleManager.CreateCommentAsync(comment);
+                return Redirect($"/Artikli/{model.ArticleId}");
+            }
+            // Korisnik ili artikal nisu pronadjeni
+            return View("Error");
         }
 
-        // Alatke
+        [Route("Kategorije/{kategorija}")]
+        public ViewResult Kategorije(string kategorija)
+        {
+            ViewBag.Title = kategorija;
+            var model = ArticleManager.FindByCategory(kategorija);
+            return View(model);
+        }
 
+        #region Alatke
         private AppIdentityDbContext Context
         {
             get => HttpContext.GetOwinContext().Get<AppIdentityDbContext>();
@@ -68,5 +79,6 @@ namespace IdentityDemo.Controllers
         {
             get => HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
         }
+        #endregion Alatke
     }
 }

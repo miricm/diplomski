@@ -151,7 +151,7 @@ namespace Users.Models
         /// <summary>
         ///     Byte array format
         /// </summary>
-        [ReadOnly(true)]
+        // [ReadOnly(true)]
         public byte[] CurrentProfilePicture { get; set; }
 
         [Required(ErrorMessage = "Korisnicko ime je obavezno!")]
@@ -191,6 +191,16 @@ namespace Users.Models
     public class UserPostsModel
     {
         public IEnumerable<Article> Articles { get; set; }
+    }
+
+    // Post
+    public class AddCommentViewModel
+    {
+        [Required]
+        public int ArticleId { get; set; }
+
+        [Required]
+        public string Text { get; set; }
     }
 
     // Security
