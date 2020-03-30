@@ -45,16 +45,16 @@ namespace Users
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            app.UseFacebookAuthentication(
-               appId: ConfigurationManager.AppSettings["facebookAppId"],
-               appSecret: ConfigurationManager.AppSettings["facebookAppSecret"]
-            );
-
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
             //    ClientId = "",
             //    ClientSecret = ""
             //});
+
+            app.UseFacebookAuthentication(
+               appId: ConfigurationManager.AppSettings["facebookAppId"],
+               appSecret: ConfigurationManager.AppSettings["facebookAppSecret"]
+            );
         }
     }
 }

@@ -472,7 +472,7 @@ namespace IdentityDemo.Controllers
 
             public override void ExecuteResult(ControllerContext context)
             {
-                //base.ExecuteResult(context);
+                // base.ExecuteResult(context);
 
                 var properties = new AuthenticationProperties { RedirectUri = ReturnUri };
                 if (!string.IsNullOrEmpty(UserId))
