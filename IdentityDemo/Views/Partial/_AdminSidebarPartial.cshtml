@@ -15,6 +15,11 @@
             @*@Html.ActionLink("Sigurnost", "Uloge", null, new { @class = "list-group-item list-group-item-action bg-light" })*@
             <a href="/Admin/Sigurnost" class="list-group-item list-group-item-action bg-light">Sigurnost</a>
 
+            @if (User.IsInRole("Moderator"))
+            {
+                <a href="/Admin/UrediObjave" class="list-group-item list-group-item-action bg-light">Uredi Objave</a>
+            }
+
             @if (User.IsInRole("Autor") || User.IsInRole("Moderator") || User.IsInRole("Administrator"))
             {
                 <a href="/Admin/Objavi" class="list-group-item list-group-item-action bg-light font-weight-bold">Postavi objavu</a>

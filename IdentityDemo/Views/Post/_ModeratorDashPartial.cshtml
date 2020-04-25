@@ -1,0 +1,13 @@
+﻿
+@model Users.Models.ModeratorPostModel
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <form action="/Artikli/@Model.ArticleId" method="post">
+            @Html.AntiForgeryToken()
+            @Html.HttpMethodOverride(HttpVerbs.Delete)
+            <button type="submit" class="btn btn-danger w-100">Ukloni objavu</button>
+        </form>
+    </div>
+</div>
+

@@ -18,9 +18,10 @@ namespace IdentityDemo.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            var model = Context.Articles.OrderByDescending(a => a.DatePublished)
-                                        .Take(4)
-                                        .ToList();
+            var model = ArticleManager.GetArticles
+                .OrderByDescending(a => a.DatePublished)
+                .Take(4)
+                .ToList();
 
             return View(model);
         }
@@ -38,14 +39,11 @@ namespace IdentityDemo.Controllers
             return View("HomeErrorPage", (object)"Došlo je do greške, pokušajte ponovo.");
         }
 
-        // Alatke
-        private AppIdentityDbContext Context
-        {
-            get => HttpContext.GetOwinContext().Get<AppIdentityDbContext>();
-        }
+        #region Alatke
         private AppUserManager UserManager
         {
             get => HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
         }
+        #endregion
     }
 }

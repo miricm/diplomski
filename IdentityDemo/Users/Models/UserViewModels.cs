@@ -203,6 +203,12 @@ namespace Users.Models
         public string Text { get; set; }
     }
 
+    public class ModeratorPostModel
+    {
+        [Required]
+        public int ArticleId { get; set; }
+    }
+
     // Security
     public class SecurityViewModel
     {

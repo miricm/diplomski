@@ -300,10 +300,6 @@ namespace IdentityDemo.Controllers
 
 
         #region Alatke
-        private AppIdentityDbContext Context
-        {
-            get => HttpContext.GetOwinContext().Get<AppIdentityDbContext>();
-        }
         private AppRoleManager RoleManager
         {
             get => HttpContext.GetOwinContext().GetUserManager<AppRoleManager>();

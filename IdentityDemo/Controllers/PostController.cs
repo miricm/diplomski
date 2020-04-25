@@ -21,7 +21,7 @@ namespace IdentityDemo.Controllers
             // var article = Context.Articles.FindById(articleId);
             var article = ArticleManager.FindById(articleId);
 
-            if(article == null)
+            if (article == null)
             {
                 return Redirect("/");
             }
@@ -68,6 +68,24 @@ namespace IdentityDemo.Controllers
             ViewBag.Title = kategorija;
             var model = ArticleManager.FindByCategory(kategorija);
             return View(model);
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("{articleId}")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UkloniObjavu(int articleId = -1)
+        {
+            var article = ArticleManager.FindById(articleId);
+            if (article != null)
+            {
+                if (await ArticleManager.DeleteAsync(article))
+                {
+                    return Redirect("/");
+                }                
+            }
+            // Artikal ne postoji ili brisanje nije uspelo
+            return View("Error");
         }
 
         #region Alatke

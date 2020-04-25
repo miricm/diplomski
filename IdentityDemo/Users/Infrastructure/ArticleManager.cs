@@ -25,7 +25,7 @@ namespace Users.Infrastructure
         public static Article FindById(int articleId)
         {
             var articles = DbContext.Articles.Where(a => a.Id == articleId);
-            return articles.Count() == 0 ? null : articles.FirstOrDefault();
+            return articles.Count() != 1 ? null : articles.FirstOrDefault();
         }
 
         public static IEnumerable<Article> FindByCategory(string value)
@@ -55,6 +55,7 @@ namespace Users.Infrastructure
             }
             catch (Exception ex)
             {
+                // Promeniti na throw ako metoda vrati false
                 // throw ex;
                 return false;
             }

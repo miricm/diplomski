@@ -16,6 +16,12 @@
                     <h5 class="card-title">Datum objave: @Model.DatePublished.ToShortDateString()</h5>
                 </div>
             </div>
+            @if(User.IsInRole("Moderator"))
+            {
+                <section id="moderatorSekcija" class="mt-3">
+                    @Html.Partial("_ModeratorDashPartial", new ModeratorPostModel { ArticleId = Model.Id})
+                </section>
+            }
         </div>
         <div class="col-md-8">
             <div id="objava" class="card shadow-sm">
