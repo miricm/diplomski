@@ -10,10 +10,10 @@ namespace Users.Infrastructure
 {
     public class AppIdentityDbContext : IdentityDbContext<AppUser>
     {
-        public AppIdentityDbContext() : base("IdentityDb") { }
-        static AppIdentityDbContext()
+        public AppIdentityDbContext() : base("IdentityDb") 
         {
-            Database.SetInitializer<AppIdentityDbContext>(new IdentityDbInit());
+            Database.SetInitializer(new IdentityDbInit());
+            Database.Initialize(true);
         }
 
         public DbSet<Article> Articles { get; set; }
@@ -30,22 +30,12 @@ namespace Users.Infrastructure
         }
     }
 
-    public class IdentityDbInit : NullDatabaseInitializer<AppIdentityDbContext>
+    public class IdentityDbInit : CreateDatabaseIfNotExists<AppIdentityDbContext>
     {
-
+        protected override void Seed(AppIdentityDbContext context)
+        {
+            // add initial data
+            base.Seed(context);
+        }
     }
-
-    //public class IdentityDbInit : DropCreateDatabaseIfModelChanges<AppIdentityDbContext>
-    //{
-    //    protected override void Seed(AppIdentityDbContext context)
-    //    {
-    //        PerformInitalSetup(context);    
-    //        base.Seed(context);
-    //    }
-
-    //    public void PerformInitalSetup(AppIdentityDbContext context)
-    //    {
-    //        // Initial configuration
-    //    }
-    //}
 }
