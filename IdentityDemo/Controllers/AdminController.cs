@@ -245,13 +245,15 @@ namespace IdentityDemo.Controllers
         {
             if (Request.IsAjaxRequest())
             {
+                model.HasPassword = true;
+
                 if (ModelState.IsValid)
                 {
                     var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                     var result = await UserManager.ChangePasswordAsync(user.Id, model.CurrentPassword, model.NewPassword);
 
                     if (result.Succeeded)
-                    {
+                    {                        
                         ViewBag.ChangePassSuccess = "Lozinka promenjena!";
                         return PartialView("~/Views/Partial/_ChangePasswordPartial.cshtml", model);
                     }

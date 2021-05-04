@@ -182,10 +182,6 @@ namespace IdentityDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginModel details, string returnUrl)
         {
-            //ClaimsIdentity identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            //AuthManager.SignOut();
-            //AuthManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
-
             if (!ModelState.IsValid)
             {
                 return View(details);
@@ -236,8 +232,7 @@ namespace IdentityDemo.Controllers
             var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null || !await UserManager.IsEmailConfirmedAsync(user.Id))
             {
-                // Ne otkrivati da korisnik ne postoji ili da nije verifikovan email
-                return View("ForgotPasswordConfirmation");
+                return View("~/Views/Home/HomeErrorPage.cshtml", model: "Došlo je do neočekivane greške");
             }
             // Generisi kod i link
             string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);

@@ -27,7 +27,7 @@
                         <div class="card-body">
                             <h4 class="card-title">@post.Title</h4>
                             <div class="d-flex justify-content-end mt-5">
-                                @Html.ActionLink("Pregledaj", "LoadPost", "Post", new { postId = post.Id }, new { @class = "btn btn-primary border-round mr-1" })
+                                <a href="/Artikli/@post.Id" class="btn btn-primary border-round mr-1">Pregledaj</a>
                                 @*<button class="btn btn-outline-danger border-round ml-1">Obriši</button>*@
                                 <form action="/Admin/ObrisiObjavu" method="post">
                                     @Html.AntiForgeryToken()
