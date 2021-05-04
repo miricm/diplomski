@@ -1,3 +1,10 @@
-## Note
+## DB Setup
 
-The database file is not required since it's code-first, but you will need to run a migration to set it up.
+* Package Manager Console
+  * enable-migrations -force
+  * add-migration Init
+  * update-database
+
+## Misc
+
+* In secrets.config add Gmail username and password
